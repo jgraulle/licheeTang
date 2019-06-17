@@ -10,19 +10,18 @@
     </HardWare>
     <Source_Files>
         <Verilog>
-            <File>test_lcd.v</File>
-            <File>lcd_sync.v</File>
+            <File>src/lcd.v</File>
+            <File>src/lcd_sync.v</File>
             <File>al_ip/ip_pll.v</File>
-            <File>data_out.v</File>
-            <File>Imagedata_send.v</File>
+            <File>src/data_out.v</File>
         </Verilog>
-        <ADC_FILE>io.adc</ADC_FILE>
-        <SDC_FILE>test_lcd.sdc</SDC_FILE>
+        <ADC_FILE>constraint/io.adc</ADC_FILE>
+        <SDC_FILE/>
         <CWC_FILE/>
     </Source_Files>
     <TOP_MODULE>
         <LABEL/>
-        <MODULE>test_lcd</MODULE>
+        <MODULE>lcd</MODULE>
         <CREATEINDEX>auto</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>

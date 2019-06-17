@@ -1,5 +1,5 @@
 
-module test_lcd
+module lcd
 (
 	input wire CLK_IN,
 	input wire RST_N,
