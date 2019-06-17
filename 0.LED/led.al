@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-    <Project_Created_Time>2018-05-03 18:06:13</Project_Created_Time>
-    <TD_Version>4.2.217</TD_Version>
+    <Project_Created_Time>2019-06-08 20:35:02</Project_Created_Time>
+    <TD_Version>4.4.433</TD_Version>
     <UCode>00000000</UCode>
     <Name>led</Name>
     <HardWare>
@@ -10,9 +10,9 @@
     </HardWare>
     <Source_Files>
         <Verilog>
-            <File>../src/led.v</File>
+            <File>src/led.v</File>
         </Verilog>
-        <ADC_FILE>../constraint/io.adc</ADC_FILE>
+        <ADC_FILE>constraint/io.adc</ADC_FILE>
         <SDC_FILE/>
         <CWC_FILE/>
     </Source_Files>
@@ -22,8 +22,8 @@
         <CREATEINDEX>auto</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Step_Last_Change>2018-08-13 11:34:16</Step_Last_Change>
-        <Current_Step>0</Current_Step>
+        <Step_Last_Change>2019-06-17 21:10:32</Step_Last_Change>
+        <Current_Step>60</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>
 </Project>
