@@ -1,5 +1,5 @@
 set_pin_assignment {CLK_IN} { LOCATION = K14; }		##24MHZ
-set_pin_assignment {RST_N} { LOCATION = K16; }		##USER_KEY
+set_pin_assignment {RST_IN} { LOCATION = K16; }		##USER_KEY
 
 set_pin_assignment {R[0]} { LOCATION = B2; }
 set_pin_assignment {R[1]} { LOCATION = A2; }
@@ -33,7 +33,3 @@ set_pin_assignment {LCD_HSYNC} { LOCATION = P1; }
 set_pin_assignment {LCD_VSYNC} { LOCATION = R1; }
 set_pin_assignment {LCD_DEN} { LOCATION = L4; }
 set_pin_assignment {LCD_PWM} { LOCATION = J16; }
-
-##set_pin_assignment {LCD_TP_SCL} { LOCATION = P2; }
-##set_pin_assignment {LCD_TP_SDA} { LOCATION = R2; }
-##set_pin_assignment {LCD_TP_INT} { LOCATION = NULL; }

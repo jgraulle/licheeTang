@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
     <Project_Created_Time>2018-05-07 15:24:38</Project_Created_Time>
-    <TD_Version>4.2.217</TD_Version>
+    <TD_Version>4.4.433</TD_Version>
     <UCode>00000000</UCode>
     <Name>test_lcd</Name>
     <HardWare>
@@ -25,8 +25,8 @@
         <CREATEINDEX>auto</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Step_Last_Change>2018-08-28 16:51:09</Step_Last_Change>
-        <Current_Step>0</Current_Step>
+        <Step_Last_Change>2019-06-17 23:51:57</Step_Last_Change>
+        <Current_Step>60</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>
 </Project>

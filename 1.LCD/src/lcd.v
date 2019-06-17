@@ -2,67 +2,61 @@
 module lcd
 (
 	input wire CLK_IN,
-	input wire RST_N,
-	output wire [0:7] R,
-	output wire [0:7] G,
-	output wire [0:7] B,
+	input wire RST_IN,
+	output wire [7:0] R,
+	output wire [7:0] G,
+	output wire [7:0] B,
 	output wire LCD_CLK,
 	output wire LCD_HSYNC,
 	output wire LCD_VSYNC,
 	output wire LCD_DEN,
-	output wire LCD_PWM		//backlight,set to high
+	output wire LCD_PWM
 );
-	wire clk_lcd;
-	wire clklock;
-	wire [10:0] hsync;
-	wire [10:0] vsync;
+
+	parameter LCD_HEIGHT = 272;
+	parameter LCD_WIDTH = 479;
 
 	ip_pll pll
 	(
-		.refclk		(CLK_IN),
-		.reset		(~RST_N),
-		.extlock		(clklock),
-		.clk0_out	(clk_lcd)
+		.refclk (CLK_IN),
+		.reset (~RST_IN),
+		.clk0_out (LCD_CLK)
 	);
-	
-	//lcd display
-	wire [10:0] hsync_cnt;
-	wire [10:0] vsync_cnt;
-	wire lcd_rden;
-	wire [15:0]lcd_rddat;	//lcd read
-	wire [15:0]lcd_rdaddr;
-	
-	lcd_sync 
+
+	wire [10:0] x;
+	wire [10:0] y;
+
+	lcd_sync
 	#(
-		.IMG_W(800),
-		.IMG_H(480),
-		.IMG_X(0),
-		.IMG_Y(0)
+		.LCD_HEIGHT(LCD_HEIGHT),
+		.LCD_WIDTH(LCD_WIDTH)
 	)
 	u_lcd_sync
 	(
-  		.clk			(clk_lcd),
-  		.rest_n		(RST_N),
-		.lcd_clk		(LCD_CLK),
-		.lcd_pwm		(LCD_PWM),
-  		.lcd_hsync	(LCD_HSYNC), 
-  		.lcd_vsync	(LCD_VSYNC), 
-  		.lcd_de		(LCD_DEN),
-  		.hsync_cnt	(hsync_cnt),
-  		.vsync_cnt	(vsync_cnt),
-		.img_ack		(lcd_rden),
-		.addr		(lcd_rdaddr)
-  	);
+		.CLK (LCD_CLK),
+		.RST_IN (RST_IN),
+		.LCD_PWM (LCD_PWM),
+		.LCD_HSYNC (LCD_HSYNC),
+		.LCD_VSYNC (LCD_VSYNC),
+		.LCD_DEN (LCD_DEN),
+		.X (x),
+		.Y (y)
+	);
 
- 	data_out datout
-	(	
-		.clk_lcd		(clk_lcd), 
-		.R			(R),
-		.G			(G),
-		.B			(B),
-		.den			(lcd_rden),
-		.hsync		(hsync_cnt),
-		.vsync		(vsync_cnt)
+	data_out
+	#(
+		.LCD_HEIGHT(LCD_HEIGHT),
+		.LCD_WIDTH(LCD_WIDTH)
+	)
+	datout
+	(
+		.CLK (LCD_CLK),
+		.R (R),
+		.G (G),
+		.B (B),
+		.DEN (LCD_DEN),
+		.X (x),
+		.Y (y)
 	);
 
 endmodule
