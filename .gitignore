@@ -1,0 +1,11 @@
+.*
+
+*.log
+*.area
+*.db
+*.bit
+
+*_tdmap.v
+*_tdpack.v
+*_tdread.v
+*_tdrtl.v
