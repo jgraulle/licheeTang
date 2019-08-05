@@ -12,6 +12,7 @@
 *_tdread.v
 *_tdrtl.v
 *_watcherInst.v
+*_rtl_sim.v
 
 */simulation/work
 *.wlf

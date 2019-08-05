@@ -12,7 +12,7 @@
         <Verilog>
             <File>src/tm1638.v</File>
             <File>src/hexTo7Seg.v</File>
-            <File>src/tm1638Cpt.v</File>
+            <File>src/tm1638BtmDisp.v</File>
         </Verilog>
         <ADC_FILE>constraint/io.adc</ADC_FILE>
         <SDC_FILE/>
@@ -20,8 +20,8 @@
     </Source_Files>
     <TOP_MODULE>
         <LABEL/>
-        <MODULE>tm1638Cpt</MODULE>
-        <CREATEINDEX>user</CREATEINDEX>
+        <MODULE>tm1638BtmDisp</MODULE>
+        <CREATEINDEX>auto</CREATEINDEX>
     </TOP_MODULE>
     <Property>
         <SimProperty>
@@ -34,7 +34,7 @@
         </RtlProperty>
     </Property>
     <Project_Settings>
-        <Step_Last_Change>2019-08-04 20:39:02</Step_Last_Change>
+        <Step_Last_Change>2019-08-06 00:01:48</Step_Last_Change>
         <Current_Step>60</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>

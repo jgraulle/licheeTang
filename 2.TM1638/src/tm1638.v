@@ -1,19 +1,21 @@
 module tm1638(
 	input wire RST_IN,
 	input wire [7:0] DATA_IN,
+	output reg [7:0] DATA_OUT,
 	input wire [3:0] ADDR,
 	input wire WRITE,
+	input wire READ,
 	input wire CLK_IN,
 	output reg STB,
-	output wire DIO,
+	inout wire DIO,
 	output wire CLK_OUT,
 	output wire READY
 );
 
 reg [7:0] dataReg;
 reg [3:0] addrReg;
-reg [2:0] state;
-wire [2:0] stateNext;
+reg [3:0] state;
+wire [3:0] stateNext;
 reg [10:0] stateBit;
 reg [7:0] byteToSend;
 reg enableStbUp;
@@ -23,12 +25,17 @@ reg clkEnableNext;
 reg clkEnable;
 reg do;
 
-parameter STATE_PRE_INIT = 3'd0;
-parameter STATE_INIT = 3'd1;
-parameter STATE_WAIT = 3'd2;
-parameter STATE_CMD_WRITE = 3'd3;
-parameter STATE_WRITE_ADDR = 3'd4;
-parameter STATE_WRITE_DATA = 3'd5;
+parameter STATE_PRE_INIT = 4'd0;
+parameter STATE_INIT = 4'd1;
+parameter STATE_WAIT = 4'd2;
+parameter STATE_CMD_WRITE = 4'd3;
+parameter STATE_WRITE_ADDR = 4'd4;
+parameter STATE_WRITE_DATA = 4'd5;
+parameter STATE_CMD_READ = 4'd6;
+parameter STATE_READ_DATA_1 = 4'd7;
+parameter STATE_READ_DATA_2 = 4'd8;
+parameter STATE_READ_DATA_3 = 4'd9;
+parameter STATE_READ_DATA_4 = 4'd10;
 
 parameter STATE_BIT_BEGIN = 0;
 parameter STATE_BIT_STB_DOWN = 1;
@@ -42,29 +49,37 @@ parameter STATE_BIT_5 = 8;
 parameter STATE_BIT_6 = 9;
 parameter STATE_BIT_7_END = 10;
 
-function [2:0] computeNextState(
-	input [2:0] state,
-	input write
+function [3:0] computeNextState(
+	input [3:0] state,
+	input write,
+	input read
 );
 case (state)
 	STATE_PRE_INIT,
 	STATE_INIT,
 	STATE_CMD_WRITE,
-	STATE_WRITE_ADDR:
+	STATE_WRITE_ADDR,
+	STATE_CMD_READ,
+	STATE_READ_DATA_1,
+	STATE_READ_DATA_2,
+	STATE_READ_DATA_3:
 		computeNextState = state + 1'b1;
 	STATE_WAIT:
-		if (write == 1)
+		if (read == 1)
+			computeNextState = STATE_CMD_READ;
+		else if (write == 1)
 			computeNextState = STATE_CMD_WRITE;
 		else
 			computeNextState = STATE_WAIT;
-	STATE_WRITE_DATA:
+	STATE_WRITE_DATA,
+	STATE_READ_DATA_4:
 		computeNextState = STATE_WAIT;
 	default:
-		computeNextState = STATE_PRE_INIT;
+		computeNextState = STATE_WAIT;
 endcase
 endfunction
 
-assign stateNext = computeNextState(state, WRITE);
+assign stateNext = computeNextState(state, WRITE, READ);
 
 always @(negedge CLK_IN)
 begin
@@ -82,7 +97,7 @@ begin
 		else
 			stateBit <= (11'b1 << STATE_BIT_BEGIN);
 
-		if (stateBit[STATE_BIT_7_END] == 1'b1 || (state == STATE_WAIT && WRITE == 1'b1))
+		if (stateBit[STATE_BIT_7_END] == 1'b1 || (state == STATE_WAIT && (WRITE == 1'b1 || READ == 1'b1)))
 			state <= stateNext;
 
 		if (stateBit[STATE_BIT_STB_DOWN] == 1'b1)
@@ -162,8 +177,49 @@ begin
 			enableStbUp = 1'b1;
 			enableClk = 1'b1;
 		end
+		STATE_CMD_READ:
+		begin
+			// Send command: data read fixed address
+			byteToSend = 8'b01000010;
+			enableStbDown = 1'b1;
+			enableStbUp = 1'b0;
+			enableClk = 1'b1;
+		end
+		STATE_READ_DATA_1:
+		begin
+			// Read data
+			byteToSend = 8'b11111111;
+			enableStbDown = 1'b0;
+			enableStbUp = 1'b0;
+			enableClk = 1'b1;
+		end
+		STATE_READ_DATA_2:
+		begin
+			// Read data
+			byteToSend = 8'b11111111;
+			enableStbDown = 1'b0;
+			enableStbUp = 1'b0;
+			enableClk = 1'b1;
+		end
+		STATE_READ_DATA_3:
+		begin
+			// Read data
+			byteToSend = 8'b11111111;
+			enableStbDown = 1'b0;
+			enableStbUp = 1'b0;
+			enableClk = 1'b1;
+		end
+		STATE_READ_DATA_4:
+		begin
+			// Read data
+			byteToSend = 8'b11111111;
+			enableStbDown = 1'b0;
+			enableStbUp = 1'b1;
+			enableClk = 1'b1;
+		end
 		default:
 		begin
+			// Do nothing
 			byteToSend = 8'b11111111;
 			enableStbDown = 1'b0;
 			enableStbUp = 1'b0;
@@ -206,8 +262,28 @@ begin
 		clkEnable <= clkEnableNext;
 end
 
-assign CLK_OUT = CLK_IN || !clkEnable;
-assign READY = state == STATE_WAIT;
+always @(posedge CLK_IN)
+begin
+	if (state == STATE_READ_DATA_1 && stateBit[STATE_BIT_0] == 1'b1)
+		DATA_OUT[0] <= DIO;
+	else if (state == STATE_READ_DATA_2 && stateBit[STATE_BIT_0] == 1'b1)
+		DATA_OUT[1] <= DIO;
+	else if (state == STATE_READ_DATA_3 && stateBit[STATE_BIT_0] == 1'b1)
+		DATA_OUT[2] <= DIO;
+	else if (state == STATE_READ_DATA_4 && stateBit[STATE_BIT_0] == 1'b1)
+		DATA_OUT[3] <= DIO;
+	else if (state == STATE_READ_DATA_1 && stateBit[STATE_BIT_4] == 1'b1)
+		DATA_OUT[4] <= DIO;
+	else if (state == STATE_READ_DATA_2 && stateBit[STATE_BIT_4] == 1'b1)
+		DATA_OUT[5] <= DIO;
+	else if (state == STATE_READ_DATA_3 && stateBit[STATE_BIT_4] == 1'b1)
+		DATA_OUT[6] <= DIO;
+	else if (state == STATE_READ_DATA_4 && stateBit[STATE_BIT_4] == 1'b1)
+		DATA_OUT[7] <= DIO;
+end
+
+assign CLK_OUT = (CLK_IN || !clkEnable);
+assign READY = (state == STATE_WAIT);
 assign DIO = (computeDo(stateBit, byteToSend) ? 1'bz : 1'b0);
 
 endmodule
