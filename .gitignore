@@ -4,8 +4,14 @@
 *.area
 *.db
 *.bit
+*.bid
+*.bak
 
 *_tdmap.v
 *_tdpack.v
 *_tdread.v
 *_tdrtl.v
+*_watcherInst.v
+
+*/simulation/work
+*.wlf

@@ -1,0 +1,6 @@
+set_pin_assignment {CLK_IN} { LOCATION = K14;  } ##24MHZ
+set_pin_assignment {RST_IN} { LOCATION = K16;  } ##USER_KEY
+## TM 1638
+set_pin_assignment {TM1638_STB} { LOCATION = P2; IOSTANDARD = LVCMOS33;  }
+set_pin_assignment {TM1638_CLK} { LOCATION = R2; IOSTANDARD = LVCMOS33;  }
+set_pin_assignment {TM1638_DIO} { LOCATION = N5; IOSTANDARD = LVCMOS33; PULLTYPE = NONE;  }
